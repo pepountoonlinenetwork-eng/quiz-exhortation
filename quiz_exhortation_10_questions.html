@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz – Je (Dieu) ne te rejette pas</title>
+<style>
+:root{--green:#123c30;--gold:#e9bb59;--cream:#faf7ef;--ink:#20302a;--muted:#68776f;--line:#dedbd2}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#10382d,#205541);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);min-height:100vh;padding:22px 14px 40px}
+header{text-align:center;color:#f7f5ed;margin:0 auto 24px;max-width:760px}header h1{font-size:clamp(22px,5vw,30px);margin:4px 0 8px}header p{margin:0;color:#dce9e1}
+main{max-width:760px;margin:auto;background:var(--cream);border-radius:28px;padding:clamp(20px,5vw,34px);box-shadow:0 18px 50px #001b1533}
+.meta{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-weight:600}.bar{height:9px;background:#e5e0d5;border-radius:20px;margin:18px 0 34px;overflow:hidden}.fill{height:100%;background:var(--gold);width:10%;transition:width .2s}
+.ref{font-weight:750;color:#80602b;margin:0 0 12px}.question{font-size:clamp(22px,5vw,29px);line-height:1.25;margin:0 0 14px}.hint{color:var(--muted);margin:0 0 24px}
+.options{display:grid;gap:12px}.option{width:100%;border:2px solid var(--line);background:white;border-radius:18px;padding:15px 16px;display:flex;align-items:center;gap:14px;text-align:left;font:inherit;font-size:17px;color:var(--ink);cursor:pointer;min-height:72px}.letter{flex:0 0 40px;height:40px;border-radius:12px;background:#f0ece2;display:grid;place-items:center;font-weight:800}.option.selected{border-color:#d5a744;background:#fffaf0}.option.correct{border-color:#36845b;background:#eff8f1}.option.wrong{border-color:#c75a50;background:#fff1ef}.option:disabled{cursor:default}
+.feedback{margin-top:18px;padding:15px;border-radius:14px;background:#efede5;line-height:1.5}.actions{display:flex;justify-content:space-between;gap:12px;margin-top:26px}button.nav{border:0;border-radius:14px;padding:14px 20px;font-size:16px;font-weight:700;background:var(--green);color:white;cursor:pointer}button.nav:disabled{opacity:.35;cursor:not-allowed}.secondary{background:transparent!important;color:var(--green)!important;border:1px solid var(--line)!important}
+.note{margin:24px 0 0;color:var(--muted);line-height:1.5;font-size:14px}.result{text-align:center;padding:20px 0}.score{font-size:54px;font-weight:850;color:var(--green);margin:8px}.hidden{display:none}
+footer{text-align:center;color:#dce9e1;margin:22px auto 0;max-width:760px;line-height:1.5}
+</style></head>
+<body>
+<header><h1>20 questions pour méditer la Parole de Dieu</h1><p>Quiz – « Je (Dieu) ne te rejette pas »</p></header>
+<main>
+<div id="quiz">
+<div class="meta"><span id="progressText">Question 1 sur 10</span><span id="scoreText">Score : 0</span></div><div class="bar"><div class="fill" id="progress"></div></div>
+<p class="ref" id="ref"></p><h2 class="question" id="question"></h2><p class="hint">Choisis la meilleure réponse.</p>
+<div class="options" id="options"></div><div id="feedback" class="feedback hidden" aria-live="polite"></div>
+<div class="actions"><button class="nav secondary" id="prev" disabled>Précédente</button><button class="nav" id="next" disabled>Valider</button></div>
+<p class="note">La correction apparaît après validation. Prends le temps de réfléchir à chaque réponse.</p>
+</div>
+<div id="result" class="result hidden"><h2>Quiz terminé !</h2><div class="score" id="finalScore">0/10</div><p id="message"></p><button class="nav" id="restart">Recommencer le quiz</button></div>
+</main>
+<footer>« Quand mon père et ma mère m’abandonnent, l’Éternel me recueillera. » — Psaume 27:10</footer>
+<script>
+const qs=[
+{r:'Ésaïe 49:15',q:'Que nous enseigne ce passage sur l’amour de Dieu ?',o:['Dieu oublie parfois ses enfants','Dieu n’oublie pas les siens','Dieu aime uniquement les fidèles','Dieu aime selon nos performances'],a:1,e:'L’amour de Dieu ne dépend pas de nos performances.'},
+{r:'Psaume 27:10',q:'Que promet Dieu lorsque nos parents nous abandonnent ?',o:['Il nous laisse seuls','Il nous punit','Il nous recueille','Il nous oublie'],a:2,e:'Même dans l’abandon humain, Dieu reste présent.'},
+{r:'Éphésiens 2:10',q:'Comment sommes-nous présentés dans ce passage ?',o:['Comme des personnes sans valeur','Comme l’ouvrage de Dieu','Comme des personnes parfaites','Comme des personnes autonomes'],a:1,e:'Nous sommes l’ouvrage de Dieu.'},
+{r:'Ésaïe 41:9-10',q:'Quel message Dieu adresse-t-il à son peuple ?',o:['Je suis avec toi, ne crains rien','Tu dois te débrouiller seul','Je t’abandonne à tes difficultés','Tu dois prouver ta valeur'],a:0,e:'Dieu affirme qu’il est avec nous et qu’il ne nous rejette pas.'},
+{r:'Exhortation',q:'D’où vient véritablement la valeur d’un homme ?',o:['De son diplôme','De son argent','Du regard des autres','De Dieu'],a:3,e:'Notre valeur vient de Dieu et non de nos possessions.'},
+{r:'Exhortation',q:'Comment le rejet peut-il se manifester dans notre vie ?',o:['Par le besoin constant d’approbation','Par une confiance totale en Dieu','Par la reconnaissance','Par la patience uniquement'],a:0,e:'Le besoin d’approbation et la mauvaise estime de soi peuvent révéler une blessure liée au rejet.'},
+{r:'Exhortation',q:'Selon le message, que devient notre valeur lorsque nous échouons ?',o:['Elle diminue','Elle disparaît','Elle reste intacte','Elle dépend des autres'],a:2,e:'L’échec ne diminue pas la valeur que Dieu nous a donnée.'},
+{r:'Exhortation',q:'Pourquoi ne devons-nous pas construire notre valeur à travers nos accomplissements ?',o:['Parce que les accomplissements sont inutiles','Parce que notre valeur vient déjà de Dieu','Parce que le travail est mauvais','Parce que les autres doivent nous valoriser'],a:1,e:'Notre valeur est intrinsèque : elle vient de notre Créateur.'},
+{r:'Exhortation',q:'Selon l’illustration du billet de 10 000 F CFA froissé, quelle leçon devons-nous retenir ?',o:['L’argent fait notre valeur','L’apparence détermine notre valeur','Les difficultés détruisent notre valeur','Notre valeur reste intacte malgré les épreuves'],a:3,e:'Un billet froissé conserve sa valeur. Il en est de même pour nous.'},
+{r:'Exhortation',q:'Que signifie être l’ouvrage de Dieu ?',o:['Que nous devons tout contrôler','Que Dieu est celui qui construit notre vie','Que nous n’avons plus rien à faire','Que nous sommes sans responsabilité'],a:1,e:'C’est Dieu qui doit construire notre vie.'}
+];
+let idx=0,answers={},validated=false;
+const $=id=>document.getElementById(id);
+function score(){return qs.reduce((n,q,i)=>n+(answers[i]===q.a?1:0),0)}
+function render(){const q=qs[idx];validated=Object.prototype.hasOwnProperty.call(answers,idx)&&validated;$('progressText').textContent=`Question ${idx+1} sur ${qs.length}`;$('scoreText').textContent=`Score : ${score()}`;$('progress').style.width=`${(idx+1)/qs.length*100}%`;$('ref').textContent=q.r;$('question').textContent=q.q;$('options').innerHTML='';q.o.forEach((v,i)=>{const b=document.createElement('button');b.className='option'+(answers[idx]===i?' selected':'');b.type='button';b.innerHTML=`<span class="letter">${'ABCD'[i]}</span><span></span>`;b.querySelector('span:last-child').textContent=v;b.disabled=validated;b.onclick=()=>{if(!validated){answers[idx]=i;renderOptionsOnly();$('next').disabled=false}};$('options').appendChild(b)});$('prev').disabled=idx===0;$('next').textContent=validated?(idx===qs.length-1?'Voir mon résultat':'Question suivante →'):'Valider';$('next').disabled=!validated&&!Object.prototype.hasOwnProperty.call(answers,idx);$('feedback').classList.toggle('hidden',!validated);if(validated){$('feedback').textContent=(answers[idx]===q.a?'Bonne réponse ! ':'Pas tout à fait. ')+q.e;markOptions()} }
+function renderOptionsOnly(){document.querySelectorAll('.option').forEach((b,i)=>b.classList.toggle('selected',answers[idx]===i));$('next').disabled=false}
+function markOptions(){document.querySelectorAll('.option').forEach((b,i)=>{if(i===qs[idx].a)b.classList.add('correct');else if(i===answers[idx])b.classList.add('wrong')})}
+$('next').onclick=()=>{if(!validated){validated=true;render()}else if(idx<qs.length-1){idx++;validated=false;render()}else{ $('quiz').classList.add('hidden');$('result').classList.remove('hidden');$('finalScore').textContent=`${score()}/10`;$('message').textContent=score()>=8?'Bravo ! Continue à méditer la Parole et à mettre ces vérités en pratique.':score()>=5?'Bien joué ! Relis les explications et approfondis les passages bibliques.':'Merci d’avoir participé. Reprends les questions et médite les passages bibliques.'}};
+$('prev').onclick=()=>{if(idx>0){idx--;validated=false;render()}};
+$('restart').onclick=()=>{idx=0;answers={};validated=false;$('result').classList.add('hidden');$('quiz').classList.remove('hidden');render()};render();
+</script></body></html>
